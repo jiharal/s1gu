@@ -7,7 +7,7 @@ import (
 	path "path/filepath"
 	"strings"
 
-	"github.com/AuthScureDevelopment/authscure-go/utils"
+	"github.com/jiharal/s1gu/utils"
 	"github.com/spf13/cobra"
 )
 

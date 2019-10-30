@@ -22,7 +22,7 @@ import (
 )
 
 var rootCmd = &cobra.Command{
-	Use:   "authscure-go",
+	Use:   "s1gu",
 	Short: "A GraphQL and RESTful API Framework Go",
 }
 

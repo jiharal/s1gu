@@ -14,7 +14,7 @@
 
 package main
 
-import "github.com/AuthScureDevelopment/authscure-go/cmd"
+import "github.com/jiharal/s1gu/cmd"
 
 func main() {
 	cmd.Execute()
