@@ -1,0 +1,27 @@
+
+	[app]
+	name = "myapp"
+	version = "0.0.1"
+	port = 9090
+
+	[login]
+	expire_time = "160000"
+
+	[database]
+	host = "localhost"
+	port = 5432
+	username = "postgres"
+	password = ""
+	name = "myapp_db"
+	sslmode = "disable"
+
+	[cache]
+	host = "localhost"
+	port = 6379
+	password = ""
+	max_idle = 100
+	idle_timeout = 5
+	enabled = true
+	expire_time = 60
+	idempotency_expiry = 86400
+	
