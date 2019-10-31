@@ -7,7 +7,7 @@ s1gu is a RESTful And GraphQL framework for the rapid development of Go applicat
 ```cmd
   A GraphQL and RESTful API Framework Go
 
-  Usage:
+  Usage:s
     s1gu [command]
 
   Available Commands:
@@ -151,75 +151,3 @@ enabled = true
 expire_time = 60
 idempotency_expiry = 86400
 ```
-
-## Testing
-
-### CockroachDB
-
-```cmd
-$ cockroach start --insecure
-```
-
-#### Create database
-
-```cmd
-$ cockroach sql --insecure
- > create database myapp_db;
- > use myapp_db;
-```
-
-#### Create table `user` and `access`
-
-```sql
-> CREATE TABLE "user" (
-  id             UUID    PRIMARY KEY DEFAULT gen_random_uuid(),
-  name      STRING  NOT NULL,
-  created_at     TIMESTAMPTZ NOT NULL DEFAULT now(),
-  created_by     UUID    NOT NULL,
-  updated_at     TIMESTAMPTZ,
-  updated_by     UUID
-);
-
-> CREATE TABLE access (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  name STRING NOT NULL,
-  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
-  created_by UUID NOT NULL,
-  updated_at TIMESTAMPTZ,
-  updated_by UUID
-);
-```
-
-#### Insert data to table access
-
-```sql
-> INSERT INTO "user"
-  (id, name, created_by)
-  VALUES ('c01c2cbb-e6c9-4d45-a486-2929d5404ea1', 'jihar', 'c01c2cbb-e6c9-4d45-a486-2929d5404eb2');
-
-> INSERT INTO access(id, name, created_by) VALUES
-  ('02842d9a-979d-4cad-b2eb-0dd131c11e91', 'CATEGORY_VIEW', '819a6572-d825-4dc4-8d0a-71177e62e795'),
-  ('9a2c64de-79c1-4430-8ed1-78797835e761', 'CATEGORY_CREATE', '819a6572-d825-4dc4-8d0a-71177e62e795'),
-  ('4cbee14b-89b8-4024-8e28-00e9e0c5ceea', 'CATEGORY_UPDATE', '819a6572-d825-4dc4-8d0a-71177e62e795');
-```
-
-### Redis
-
-```cmd
-redis-server
-```
-
-### App
-
-```cmd
-$ go run main.go
-Listening on http://localhost:9100
-```
-
-### Browser
-
-```url
-  http://localhost:9100/access
-```
-
-![img](https://user-images.githubusercontent.com/21150538/45773062-8dbc7800-bc73-11e8-8e6e-9c9e2718e072.png)
