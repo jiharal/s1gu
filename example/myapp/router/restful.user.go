@@ -1,7 +1,6 @@
 package router
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -21,8 +20,6 @@ func HandlerUserLogin(w http.ResponseWriter, r *http.Request) (interface{}, *api
 			http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 	}
 
-	fmt.Println(param)
-
 	_, token, aErr := userService.Login(ctx, param)
 	if aErr != nil {
 		return nil, aErr
@@ -33,7 +30,6 @@ func HandlerUserLogin(w http.ResponseWriter, r *http.Request) (interface{}, *api
 	}{
 		AccessToken: token,
 	}
-	fmt.Println(data)
 
 	return data, nil
 }

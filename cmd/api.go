@@ -72,10 +72,6 @@ func CreateApi(cmd *cobra.Command, args []string) {
 			cache *redis.Pool
 			name  string
 		}
-	
-		{{.ApiName}}Param struct {
-			ID    uuid.UUID ` + fmt.Sprintf("`json:%s`", `"id"`) + `
-		}
 
 		{{.ApiName}}DataParam struct {
 			ID    uuid.UUID ` + fmt.Sprintf("`json:%s`", `"id"`) + `
