@@ -181,42 +181,6 @@ func CreateModel(cmd *cobra.Command, args []string) {
 			return {{.ModelNameLower}}, nil
 		}
 
-		func GetOne{{.ModelName}}ByEmail(ctx context.Context, db *sql.DB, email string) ({{.ModelName}}Model, error) {
-			query := ` + fmt.Sprintf("`%s`", `
-				SELECT
-					id,
-					name,
-					email,
-					password,
-					created_at,
-					created_by,
-					updated_at,
-					updated_by
-				FROM
-					{{.ModelNameLower}}
-				WHERE
-					email = $1`) + `
-		
-			var {{.ModelNameLower}} {{.ModelName}}Model
-		
-			err := db.QueryRowContext(ctx, query, id).Scan(
-				&{{.ModelNameLower}}.ID,
-				&{{.ModelNameLower}}.Name,
-				&{{.ModelNameLower}}.Email,
-				&{{.ModelNameLower}}.Password,
-				&{{.ModelNameLower}}.CreatedAt,
-				&{{.ModelNameLower}}.CreatedBy,
-				&{{.ModelNameLower}}.UpdatedAt,
-				&{{.ModelNameLower}}.UpdatedBy,
-			)
-			if err != nil {
-				return {{.ModelName}}Model{}, errors.Wrap(err, "model/{{.ModelNameLower}}/query/id")
-			}
-		
-			return {{.ModelNameLower}}, nil
-		}
-
-
 		func ({{.ModelNameLower}} *{{.ModelName}}Model) Insert(ctx context.Context, db *sql.DB) error {
 			query := ` + fmt.Sprintf("`%s`", `
 			INSERT INTO {{.ModelNameLower}} (
