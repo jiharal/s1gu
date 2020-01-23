@@ -54,6 +54,8 @@ func CreateModel(cmd *cobra.Command, args []string) {
 			{{.ModelName}}Model struct{
 				ID        uuid.UUID
 				Name      string     
+				Email 		string
+				Password 	string
 				CreatedAt time.Time
 				CreatedBy uuid.UUID
 				UpdatedAt pq.NullTime
@@ -63,6 +65,8 @@ func CreateModel(cmd *cobra.Command, args []string) {
 			{{.ModelName}}ModelResponse struct{
 				ID        uuid.UUID     ` + fmt.Sprintf("`json:%s`", `"id"`) + `
 				Name      string        ` + fmt.Sprintf("`json:%s`", `"name"`) + `
+				Email     string        ` + fmt.Sprintf("`json:%s`", `"email"`) + `
+				Password  string        ` + fmt.Sprintf("`json:%s`", `"password"`) + `
 				CreatedAt time.Time     ` + fmt.Sprintf("`json:%s`", `"created_at"`) + `
 				CreatedBy uuid.UUID     ` + fmt.Sprintf("`json:%s`", `"created_by"`) + `
 				UpdatedAt time.Time   	` + fmt.Sprintf("`json:%s`", `"updated_at"`) + `
@@ -76,6 +80,8 @@ func CreateModel(cmd *cobra.Command, args []string) {
 			return {{.ModelName}}ModelResponse{
 				ID:        {{.ModelNameLower}}.ID,
 				Name:      {{.ModelNameLower}}.Name,
+				Email:     {{.ModelNameLower}}.Email,
+				Password:  {{.ModelNameLower}}.Password,
 				CreatedAt: {{.ModelNameLower}}.CreatedAt,
 				CreatedBy: {{.ModelNameLower}}.CreatedBy,
 				UpdatedAt: {{.ModelNameLower}}.UpdatedAt.Time,
@@ -96,6 +102,8 @@ func CreateModel(cmd *cobra.Command, args []string) {
 			query := fmt.Sprintf(` + fmt.Sprintf("`%s`", `SELECT
 				id,
 				name,
+				email,
+				password,
 				created_at,
 				created_by,
 				updated_at,
@@ -103,9 +111,9 @@ func CreateModel(cmd *cobra.Command, args []string) {
 			FROM
 				{{.ModelNameLower}}
 			WHERE
-				id = CASE WHEN $1 <> '' THEN $1 ELSE id END
+				name = CASE WHEN $1 <> '' THEN $1 ELSE name END
 			ORDER BY
-				id %s
+				created_at %s
 			LIMIT $2 OFFSET $3`) + `, filter.Dir)
 		
 			rows, err := db.QueryContext(ctx, query, filter.Search, filter.Limit, filter.Offset)
@@ -122,6 +130,8 @@ func CreateModel(cmd *cobra.Command, args []string) {
 				err = rows.Scan(
 					&{{.ModelNameLower}}.ID,
 					&{{.ModelNameLower}}.Name,
+					&{{.ModelNameLower}}.Email,
+					&{{.ModelNameLower}}.Password,
 					&{{.ModelNameLower}}.CreatedAt,
 					&{{.ModelNameLower}}.CreatedBy,
 					&{{.ModelNameLower}}.UpdatedAt,
@@ -141,6 +151,8 @@ func CreateModel(cmd *cobra.Command, args []string) {
 				SELECT
 					id,
 					name,
+					email,
+					password,
 					created_at,
 					created_by,
 					updated_at,
@@ -155,6 +167,8 @@ func CreateModel(cmd *cobra.Command, args []string) {
 			err := db.QueryRowContext(ctx, query, id).Scan(
 				&{{.ModelNameLower}}.ID,
 				&{{.ModelNameLower}}.Name,
+				&{{.ModelNameLower}}.Email,
+				&{{.ModelNameLower}}.Password,
 				&{{.ModelNameLower}}.CreatedAt,
 				&{{.ModelNameLower}}.CreatedBy,
 				&{{.ModelNameLower}}.UpdatedAt,
@@ -167,20 +181,61 @@ func CreateModel(cmd *cobra.Command, args []string) {
 			return {{.ModelNameLower}}, nil
 		}
 
+		func GetOne{{.ModelName}}ByEmail(ctx context.Context, db *sql.DB, email string) ({{.ModelName}}Model, error) {
+			query := ` + fmt.Sprintf("`%s`", `
+				SELECT
+					id,
+					name,
+					email,
+					password,
+					created_at,
+					created_by,
+					updated_at,
+					updated_by
+				FROM
+					{{.ModelNameLower}}
+				WHERE
+					email = $1`) + `
+		
+			var {{.ModelNameLower}} {{.ModelName}}Model
+		
+			err := db.QueryRowContext(ctx, query, id).Scan(
+				&{{.ModelNameLower}}.ID,
+				&{{.ModelNameLower}}.Name,
+				&{{.ModelNameLower}}.Email,
+				&{{.ModelNameLower}}.Password,
+				&{{.ModelNameLower}}.CreatedAt,
+				&{{.ModelNameLower}}.CreatedBy,
+				&{{.ModelNameLower}}.UpdatedAt,
+				&{{.ModelNameLower}}.UpdatedBy,
+			)
+			if err != nil {
+				return {{.ModelName}}Model{}, errors.Wrap(err, "model/{{.ModelNameLower}}/query/id")
+			}
+		
+			return {{.ModelNameLower}}, nil
+		}
+
+
 		func ({{.ModelNameLower}} *{{.ModelName}}Model) Insert(ctx context.Context, db *sql.DB) error {
 			query := ` + fmt.Sprintf("`%s`", `
 			INSERT INTO {{.ModelNameLower}} (
 				name,
+				email,
+				password,
 				created_by,
 				created_at
 			) VALUES (
-				$1, $2, now()
+				$1, $2, $3, $4, now()
 			) RETURNING
 				id,
 				created_at`) + `
 		
 			err := db.QueryRowContext(ctx, query,
 				{{.ModelNameLower}}.Name,
+				{{.ModelNameLower}}.Email,
+				{{.ModelNameLower}}.Password,
+				{{.ModelNameLower}}.CreatedBy,
 			).Scan(
 				&{{.ModelNameLower}}.ID,
 				&{{.ModelNameLower}}.CreatedAt,
@@ -198,13 +253,17 @@ func CreateModel(cmd *cobra.Command, args []string) {
 					{{.ModelNameLower}}
 				SET
 					name = $1,
-					updated_by = $2,
+					email = $2,
+					password = $3,
+					updated_by = $4,
 					updated_at = NOW()
 				WHERE
-					id=$3`) + `
+					id = $5`) + `
 		
 			_, err := db.ExecContext(ctx, query,
 				{{.ModelNameLower}}.Name,
+				{{.ModelNameLower}}.Email,
+				{{.ModelNameLower}}.Password,
 				{{.ModelNameLower}}.UpdatedBy,
 				{{.ModelNameLower}}.ID,
 			)
@@ -223,7 +282,6 @@ func CreateModel(cmd *cobra.Command, args []string) {
 			if err != nil {
 				return errors.Wrap(err, "model/{{.ModelNameLower}}/delete")
 			}
-		
 			return nil
 		}`
 
