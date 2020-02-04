@@ -2,7 +2,7 @@ package cmd
 
 import "fmt"
 
-func CreateInitFile(appPath string) string {
+func (n S1GU) createInitFile(appPath string) string {
 	initFile :=
 		`
 		package router
@@ -71,7 +71,7 @@ func CreateInitFile(appPath string) string {
 	return initFile
 }
 
-func CreateHandlerFile(appPath string) string {
+func (n S1GU) createHandlerFile(appPath string) string {
 	handlerFile :=
 		`
 		package router
@@ -168,7 +168,7 @@ func CreateHandlerFile(appPath string) string {
 	return handlerFile
 }
 
-func CreateGraphQLFile(appPath, appName string) string {
+func (n S1GU) createGraphQLFile(appPath, appName string) string {
 	graphQLFile := `
 	package router
 
@@ -319,7 +319,7 @@ func CreateGraphQLFile(appPath, appName string) string {
 	return graphQLFile
 }
 
-func CreateRestFile(appPath string) string {
+func (n S1GU) createRestFile(appPath string) string {
 	body := `
 	package router
 

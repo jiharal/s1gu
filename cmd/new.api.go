@@ -2,7 +2,7 @@ package cmd
 
 import "fmt"
 
-func CreateAPIUser(appPath string) string {
+func (n S1GU) createAPIUser(appPath string) string {
 	body := `
 	package api
 
@@ -205,7 +205,7 @@ func CreateAPIUser(appPath string) string {
 	return body
 }
 
-func CreateErrorFile() string {
+func (n S1GU) createErrorFile() string {
 	return `
 	package api
 
@@ -243,7 +243,7 @@ func CreateErrorFile() string {
 	`
 }
 
-func CreateAPIInitFile() string {
+func (n S1GU) createAPIInitFile() string {
 	return `
 	package api
 
@@ -276,7 +276,7 @@ func CreateAPIInitFile() string {
 	`
 }
 
-func CreateAPIResponse() string {
+func (n S1GU) createAPIResponse() string {
 	return `package api
 
 	import (
@@ -332,7 +332,7 @@ func CreateAPIResponse() string {
 	`
 }
 
-func CreateNewSessionAPIFile(appPath string) string {
+func (n S1GU) createNewSessionAPIFile(appPath string) string {
 	body := `package api
 
 	import (

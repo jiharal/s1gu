@@ -2,7 +2,7 @@ package cmd
 
 import "fmt"
 
-func CreateInitAuth() string {
+func (n S1GU) createInitAuth() string {
 	return `package auth
 
 	import (
@@ -32,7 +32,7 @@ func CreateInitAuth() string {
 	`
 }
 
-func CreateAuthMiddleware(appPath string) string {
+func (n S1GU) createAuthMiddleware(appPath string) string {
 	return `package auth
 
 	import (

@@ -1,6 +1,6 @@
 package cmd
 
-func CreateGeneralID() string {
+func (n S1GU) createGeneralID() string {
 	return `package system
 
 	import uuid "github.com/satori/go.uuid"

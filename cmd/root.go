@@ -26,6 +26,7 @@ var rootCmd = &cobra.Command{
 	Short: "A GraphQL and RESTful API Framework Go",
 }
 
+// Execute is ...
 func Execute() {
 	rootCmd.AddCommand(modelCommand, newCommand, routerCommand, apiCommand)
 	if err := rootCmd.Execute(); err != nil {

@@ -2,7 +2,7 @@ package cmd
 
 import "fmt"
 
-func CreateNewModelFile() string {
+func (n S1GU) createNewModelFile() string {
 	fileFileModelUser := `
 	package model
 

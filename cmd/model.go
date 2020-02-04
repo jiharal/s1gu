@@ -15,10 +15,10 @@ var modelCommand = &cobra.Command{
 	Use:   "model [model name]",
 	Short: "Create model application",
 	Args:  cobra.MinimumNArgs(1),
-	Run:   CreateModel,
+	Run:   createModel,
 }
 
-func CreateModel(cmd *cobra.Command, args []string) {
+func createModel(cmd *cobra.Command, args []string) {
 	output := cmd.OutOrStderr()
 	getEnv, _ := os.Getwd()
 

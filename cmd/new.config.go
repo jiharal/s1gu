@@ -2,7 +2,7 @@ package cmd
 
 import "fmt"
 
-func CreateConfigFile(appName string) string {
+func (n S1GU) createConfigFile(appName string) string {
 	configFile := `
 	[app]
 	name = "` + fmt.Sprintf("%s", appName) + `"

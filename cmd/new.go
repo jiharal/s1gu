@@ -11,6 +11,9 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// S1GU is ...
+type S1GU struct{}
+
 var newCommand = &cobra.Command{
 	Use:   "new",
 	Short: "Create new project",
@@ -19,6 +22,8 @@ var newCommand = &cobra.Command{
 }
 
 func createNewFramework(cmd *cobra.Command, args []string) {
+	var newSigu S1GU
+
 	output := cmd.OutOrStderr()
 	apppath, packpath, err := utils.CheckEnv(args[0])
 	if err != nil {
@@ -42,31 +47,31 @@ func createNewFramework(cmd *cobra.Command, args []string) {
 	os.Mkdir(path.Join(apppath, "api"), 0755)
 	// Create file init.go in api directory
 	fmt.Fprintf(output, "\t%s%screate%s\t %s%s\n", "\x1b[32m", "\x1b[1m", "\x1b[21m", path.Join(apppath, "api", "init.go"), "\x1b[0m")
-	utils.WriteToFile(path.Join(apppath, "api", "init.go"), CreateAPIInitFile())
+	utils.WriteToFile(path.Join(apppath, "api", "init.go"), newSigu.createAPIInitFile())
 	// Create file init.go in api directory
 	fmt.Fprintf(output, "\t%s%screate%s\t %s%s\n", "\x1b[32m", "\x1b[1m", "\x1b[21m", path.Join(apppath, "api", "api.user.go"), "\x1b[0m")
-	utils.WriteToFile(path.Join(apppath, "api", "api.user.go"), CreateAPIUser(packpath))
+	utils.WriteToFile(path.Join(apppath, "api", "api.user.go"), newSigu.createAPIUser(packpath))
 	fmt.Fprintf(output, "\t%s%screate%s\t %s%s\n", "\x1b[32m", "\x1b[1m", "\x1b[21m", path.Join(apppath, "api", "error.go"), "\x1b[0m")
-	utils.WriteToFile(path.Join(apppath, "api", "error.go"), CreateErrorFile())
+	utils.WriteToFile(path.Join(apppath, "api", "error.go"), newSigu.createErrorFile())
 	fmt.Fprintf(output, "\t%s%screate%s\t %s%s\n", "\x1b[32m", "\x1b[1m", "\x1b[21m", path.Join(apppath, "api", "response.go"), "\x1b[0m")
-	utils.WriteToFile(path.Join(apppath, "api", "response.go"), CreateAPIResponse())
+	utils.WriteToFile(path.Join(apppath, "api", "response.go"), newSigu.createAPIResponse())
 	fmt.Fprintf(output, "\t%s%screate%s\t %s%s\n", "\x1b[32m", "\x1b[1m", "\x1b[21m", path.Join(apppath, "api", "session.go"), "\x1b[0m")
-	utils.WriteToFile(path.Join(apppath, "api", "session.go"), CreateNewSessionAPIFile(packpath))
+	utils.WriteToFile(path.Join(apppath, "api", "session.go"), newSigu.createNewSessionAPIFile(packpath))
 
 	// Create cmd directory
 	fmt.Fprintf(output, "\t%s%screate%s\t %s%s\n", "\x1b[32m", "\x1b[1m", "\x1b[21m", apppath+string(path.Separator), "\x1b[0m")
 	os.Mkdir(path.Join(apppath, "cmd"), 0755)
 	// Create file cmd.go in cmd directory
 	fmt.Fprintf(output, "\t%s%screate%s\t %s%s\n", "\x1b[32m", "\x1b[1m", "\x1b[21m", path.Join(apppath, "cmd", "cmd.go"), "\x1b[0m")
-	utils.WriteToFile(path.Join(apppath, "cmd", "cmd.go"), CreateNewCMD(packpath, strings.ToLower(args[0])))
+	utils.WriteToFile(path.Join(apppath, "cmd", "cmd.go"), newSigu.createNewCMD(packpath, strings.ToLower(args[0])))
 
 	// Create auth directory
 	fmt.Fprintf(output, "\t%s%screate%s\t %s%s\n", "\x1b[32m", "\x1b[1m", "\x1b[21m", apppath+string(path.Separator), "\x1b[0m")
 	os.Mkdir(path.Join(apppath, "auth"), 0755)
 	fmt.Fprintf(output, "\t%s%screate%s\t %s%s\n", "\x1b[32m", "\x1b[1m", "\x1b[21m", path.Join(apppath, "api", "init.go"), "\x1b[0m")
-	utils.WriteToFile(path.Join(apppath, "auth", "init.go"), CreateInitAuth())
+	utils.WriteToFile(path.Join(apppath, "auth", "init.go"), newSigu.createInitAuth())
 	fmt.Fprintf(output, "\t%s%screate%s\t %s%s\n", "\x1b[32m", "\x1b[1m", "\x1b[21m", path.Join(apppath, "api", "middleware.go"), "\x1b[0m")
-	utils.WriteToFile(path.Join(apppath, "auth", "middleware.go"), CreateAuthMiddleware(packpath))
+	utils.WriteToFile(path.Join(apppath, "auth", "middleware.go"), newSigu.createAuthMiddleware(packpath))
 
 	// Create model directory
 	fmt.Fprintf(output, "\t%s%screate%s\t %s%s\n", "\x1b[32m", "\x1b[1m", "\x1b[21m", apppath+string(path.Separator), "\x1b[0m")
@@ -74,7 +79,7 @@ func createNewFramework(cmd *cobra.Command, args []string) {
 
 	// Create file model.user.go
 	fmt.Fprintf(output, "\t%s%screate%s\t %s%s\n", "\x1b[32m", "\x1b[1m", "\x1b[21m", path.Join(apppath, "model", "model.user.go"), "\x1b[0m")
-	utils.WriteToFile(path.Join(apppath, "model", "model.user.go"), CreateNewModelFile())
+	utils.WriteToFile(path.Join(apppath, "model", "model.user.go"), newSigu.createNewModelFile())
 
 	// Create route directory
 	fmt.Fprintf(output, "\t%s%screate%s\t %s%s\n", "\x1b[32m", "\x1b[1m", "\x1b[21m", apppath+string(path.Separator), "\x1b[0m")
@@ -82,41 +87,41 @@ func createNewFramework(cmd *cobra.Command, args []string) {
 
 	// Create file init.go
 	fmt.Fprintf(output, "\t%s%screate%s\t %s%s\n", "\x1b[32m", "\x1b[1m", "\x1b[21m", path.Join(apppath, "router", "init.go"), "\x1b[0m")
-	utils.WriteToFile(path.Join(apppath, "router", "init.go"), CreateInitFile(packpath))
+	utils.WriteToFile(path.Join(apppath, "router", "init.go"), newSigu.createInitFile(packpath))
 
 	// Create file handler.go
 	fmt.Fprintf(output, "\t%s%screate%s\t %s%s\n", "\x1b[32m", "\x1b[1m", "\x1b[21m", path.Join(apppath, "router", "handler.go"), "\x1b[0m")
-	utils.WriteToFile(path.Join(apppath, "router", "handler.go"), CreateHandlerFile(packpath))
+	utils.WriteToFile(path.Join(apppath, "router", "handler.go"), newSigu.createHandlerFile(packpath))
 
 	// Create file graphql.user.go
 	fmt.Fprintf(output, "\t%s%screate%s\t %s%s\n", "\x1b[32m", "\x1b[1m", "\x1b[21m", path.Join(apppath, "router", "graphql.user.go"), "\x1b[0m")
-	utils.WriteToFile(path.Join(apppath, "router", "graphql.user.go"), CreateGraphQLFile(packpath, appName))
+	utils.WriteToFile(path.Join(apppath, "router", "graphql.user.go"), newSigu.createGraphQLFile(packpath, appName))
 
 	// Create file restful.user.go
 	fmt.Fprintf(output, "\t%s%screate%s\t %s%s\n", "\x1b[32m", "\x1b[1m", "\x1b[21m", path.Join(apppath, "router", "handler.user.go"), "\x1b[0m")
-	utils.WriteToFile(path.Join(apppath, "router", "handler.user.go"), CreateRestFile(packpath))
+	utils.WriteToFile(path.Join(apppath, "router", "handler.user.go"), newSigu.createRestFile(packpath))
 
 	// Create system directory
 	fmt.Fprintf(output, "\t%s%screate%s\t %s%s\n", "\x1b[32m", "\x1b[1m", "\x1b[21m", apppath+string(path.Separator), "\x1b[0m")
 	os.Mkdir(path.Join(apppath, "system"), 0755)
 	// Create file id.go
 	fmt.Fprintf(output, "\t%s%screate%s\t %s%s\n", "\x1b[32m", "\x1b[1m", "\x1b[21m", path.Join(apppath, "system", "id.go"), "\x1b[0m")
-	utils.WriteToFile(path.Join(apppath, "system", "id.go"), CreateGeneralID())
+	utils.WriteToFile(path.Join(apppath, "system", "id.go"), newSigu.createGeneralID())
 
 	// Create files directory
 	fmt.Fprintf(output, "\t%s%screate%s\t %s%s\n", "\x1b[32m", "\x1b[1m", "\x1b[21m", apppath+string(path.Separator), "\x1b[0m")
 	os.Mkdir(path.Join(apppath, "files"), 0755)
 	// Create file restful.user.go
 	fmt.Fprintf(output, "\t%s%screate%s\t %s%s\n", "\x1b[32m", "\x1b[1m", "\x1b[21m", path.Join(apppath, "files", "db.sql"), "\x1b[0m")
-	utils.WriteToFile(path.Join(apppath, "files", "db.sql"), CreateDBFile())
+	utils.WriteToFile(path.Join(apppath, "files", "db.sql"), newSigu.createDBFile())
 
 	// Create file main.go
 	fmt.Fprintf(output, "\t%s%screate%s\t %s%s\n", "\x1b[32m", "\x1b[1m", "\x1b[21m", path.Join(apppath, "main.go"), "\x1b[0m")
-	utils.WriteToFile(path.Join(apppath, "main.go"), CreateMainPage(packpath))
+	utils.WriteToFile(path.Join(apppath, "main.go"), newSigu.createMainPage(packpath))
 
 	// Create file config.toml
 	fmt.Fprintf(output, "\t%s%screate%s\t %s%s\n", "\x1b[32m", "\x1b[1m", "\x1b[21m", path.Join(apppath, fileConfigName), "\x1b[0m")
-	utils.WriteToFile(path.Join(apppath, fileConfigName), CreateConfigFile(appName))
+	utils.WriteToFile(path.Join(apppath, fileConfigName), newSigu.createConfigFile(appName))
 
 	fmt.Println("New application successfully created!")
 }

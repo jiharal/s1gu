@@ -1,6 +1,6 @@
 package cmd
 
-func CreateDBFile() string {
+func (n S1GU) createDBFile() string {
 	return `-- Postgresql
 	CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 	CREATE EXTENSION IF NOT EXISTS pgcrypto;

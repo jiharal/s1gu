@@ -2,7 +2,7 @@ package cmd
 
 import "fmt"
 
-func CreateNewCMD(appPath, appName string) string {
+func (n S1GU) createNewCMD(appPath, appName string) string {
 	cmd := `
 	package cmd
 

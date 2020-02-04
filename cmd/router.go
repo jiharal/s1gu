@@ -15,10 +15,10 @@ var routerCommand = &cobra.Command{
 	Use:   "router [router name] [graphql or rest]",
 	Short: "Create router application",
 	Args:  cobra.MinimumNArgs(2),
-	Run:   CreateRouter,
+	Run:   createRouter,
 }
 
-func CreateRouter(cmd *cobra.Command, args []string) {
+func createRouter(cmd *cobra.Command, args []string) {
 	output := cmd.OutOrStderr()
 	getEnv, _ := os.Getwd()
 

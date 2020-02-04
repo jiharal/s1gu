@@ -15,10 +15,10 @@ var apiCommand = &cobra.Command{
 	Use:   "api [api name]",
 	Short: "Create api aplication",
 	Args:  cobra.MinimumNArgs(1),
-	Run:   CreateApi,
+	Run:   createAPI,
 }
 
-func CreateApi(cmd *cobra.Command, args []string) {
+func createAPI(cmd *cobra.Command, args []string) {
 	output := cmd.OutOrStderr()
 	getEnv, _ := os.Getwd()
 
