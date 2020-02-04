@@ -93,8 +93,8 @@ func createNewFramework(cmd *cobra.Command, args []string) {
 	utils.WriteToFile(path.Join(apppath, "router", "graphql.user.go"), CreateGraphQLFile(packpath, appName))
 
 	// Create file restful.user.go
-	fmt.Fprintf(output, "\t%s%screate%s\t %s%s\n", "\x1b[32m", "\x1b[1m", "\x1b[21m", path.Join(apppath, "router", "restful.user.go"), "\x1b[0m")
-	utils.WriteToFile(path.Join(apppath, "router", "restful.user.go"), CreateRestFile(packpath))
+	fmt.Fprintf(output, "\t%s%screate%s\t %s%s\n", "\x1b[32m", "\x1b[1m", "\x1b[21m", path.Join(apppath, "router", "handler.user.go"), "\x1b[0m")
+	utils.WriteToFile(path.Join(apppath, "router", "handler.user.go"), CreateRestFile(packpath))
 
 	// Create system directory
 	fmt.Fprintf(output, "\t%s%screate%s\t %s%s\n", "\x1b[32m", "\x1b[1m", "\x1b[21m", apppath+string(path.Separator), "\x1b[0m")
