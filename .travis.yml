@@ -5,9 +5,6 @@ go:
 
 before_install:
   - go get github.com/mattn/goveralls
-  - go get github.com/golang/dep/cmd/dep
-install:
-  - $GOPATH/bin/dep ensure
 
 before_script:
   - wget http://downloads.majestic.com/majestic_million.csv
