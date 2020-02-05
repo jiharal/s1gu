@@ -2,6 +2,7 @@
 
 [![Build Status](https://travis-ci.com/jiharal/s1gu.svg?branch=master)](https://travis-ci.com/jiharal/s1gu)
 
+[![Coverage Status](https://coveralls.io/repos/github/jiharal/s1gu/badge.svg?branch=master)](https://coveralls.io/github/jiharal/s1gu?branch=master)
 
 s1gu is a RESTful And GraphQL framework for the rapid development of Go applications including APIs.
 
