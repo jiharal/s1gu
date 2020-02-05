@@ -3,8 +3,12 @@ language: go
 go:
   - 1.13
 
+before_script:
+  - wget http://downloads.majestic.com/majestic_million.csv
 script:
   - go test -race -coverprofile=coverage.txt -covermode=atomic
+  - go test -cover -race -v ./...
+  - $GOPATH/bin/goveralls -service=travis-ci
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
