@@ -1,5 +1,8 @@
 # s1gu framework
 
+[![Build Status](https://travis-ci.com/jiharal/s1gu.svg?branch=master)](https://travis-ci.com/jiharal)
+
+
 s1gu is a RESTful And GraphQL framework for the rapid development of Go applications including APIs.
 
 ## s1gu commands
