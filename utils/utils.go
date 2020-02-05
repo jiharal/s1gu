@@ -63,7 +63,7 @@ func CheckEnv(appname string) (apppath, packpath string, err error) {
 	gopath := gps[0]
 
 	log.Fatalf("You current workdir is not inside $GOPATH/src.")
-	log.Fatalf("GOPATH: %s", FILE(), LINE(), gopath)
+	log.Fatalf("GOPATH: %s %v %s", FILE(), LINE(), gopath)
 
 	gosrcpath := filepath.Join(gopath, "src")
 	apppath = filepath.Join(gosrcpath, appname)
