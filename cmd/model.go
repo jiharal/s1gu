@@ -73,8 +73,8 @@ func createModel(cmd *cobra.Command, args []string) {
 		)
 
 
-		// Convert {{.ModelNameLower}} model into json-friendly formatted response struct (without null data type).
-		func Response ({{.ModelNameLower}} *{{.ModelName}}Model) Response() {{.ModelName}}ModelResponse {
+		// Response Convert {{.ModelNameLower}} model into json-friendly formatted response struct (without null data type).
+		func ({{.ModelNameLower}} *{{.ModelName}}Model) Response() {{.ModelName}}ModelResponse {
 			return {{.ModelName}}ModelResponse{
 				ID:        {{.ModelNameLower}}.ID,
 				Name:      {{.ModelNameLower}}.Name,
@@ -217,7 +217,7 @@ func createModel(cmd *cobra.Command, args []string) {
 			return nil
 		}
 
-		// Delete is ...
+		// Delete{{.ModelName}}ByID is ...
 		func Delete{{.ModelName}}ByID(ctx context.Context, db *sql.DB, id uuid.UUID) error {
 			query := "DELETE FROM {{.ModelNameLower}} WHERE id = $1"
 		

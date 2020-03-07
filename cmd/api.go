@@ -64,7 +64,6 @@ func createAPI(cmd *cobra.Command, args []string) {
 		uuid "github.com/satori/go.uuid"
 	
 		"{{.AppPath}}/model"
-		"{{.AppPath}}/util"
 	)
 
 	type (
