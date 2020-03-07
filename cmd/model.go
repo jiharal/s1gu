@@ -7,8 +7,9 @@ import (
 	path "path/filepath"
 	"strings"
 
-	"github.com/jiharal/s1gu/utils"
 	"github.com/spf13/cobra"
+
+	"github.com/jiharal/s1gu/utils"
 )
 
 var modelCommand = &cobra.Command{
@@ -50,23 +51,20 @@ func createModel(cmd *cobra.Command, args []string) {
 		)
 
 		type (
-
+			// {{.ModelName}}Model is a struct.
 			{{.ModelName}}Model struct{
 				ID        uuid.UUID
 				Name      string     
-				Email 		string
-				Password 	string
 				CreatedAt time.Time
 				CreatedBy uuid.UUID
 				UpdatedAt pq.NullTime
 				UpdatedBy uuid.NullUUID
 			}
 
+			// {{.ModelName}}ModelResponse is a struct response.
 			{{.ModelName}}ModelResponse struct{
 				ID        uuid.UUID     ` + fmt.Sprintf("`json:%s`", `"id"`) + `
 				Name      string        ` + fmt.Sprintf("`json:%s`", `"name"`) + `
-				Email     string        ` + fmt.Sprintf("`json:%s`", `"email"`) + `
-				Password  string        ` + fmt.Sprintf("`json:%s`", `"password"`) + `
 				CreatedAt time.Time     ` + fmt.Sprintf("`json:%s`", `"created_at"`) + `
 				CreatedBy uuid.UUID     ` + fmt.Sprintf("`json:%s`", `"created_by"`) + `
 				UpdatedAt time.Time   	` + fmt.Sprintf("`json:%s`", `"updated_at"`) + `
@@ -76,12 +74,10 @@ func createModel(cmd *cobra.Command, args []string) {
 
 
 		// Convert {{.ModelNameLower}} model into json-friendly formatted response struct (without null data type).
-		func ({{.ModelNameLower}} *{{.ModelName}}Model) Response() {{.ModelName}}ModelResponse {
+		func Response ({{.ModelNameLower}} *{{.ModelName}}Model) Response() {{.ModelName}}ModelResponse {
 			return {{.ModelName}}ModelResponse{
 				ID:        {{.ModelNameLower}}.ID,
 				Name:      {{.ModelNameLower}}.Name,
-				Email:     {{.ModelNameLower}}.Email,
-				Password:  {{.ModelNameLower}}.Password,
 				CreatedAt: {{.ModelNameLower}}.CreatedAt,
 				CreatedBy: {{.ModelNameLower}}.CreatedBy,
 				UpdatedAt: {{.ModelNameLower}}.UpdatedAt.Time,
@@ -89,11 +85,7 @@ func createModel(cmd *cobra.Command, args []string) {
 			}
 		}
 
-		// Implements api/SessionData interface.
-		func (am {{.ModelName}}Model) Identifier() uuid.UUID {
-			return am.ID
-		}
-
+		// GetAll{{.ModelName}} is a ...
 		func GetAll{{.ModelName}}(ctx context.Context, db *sql.DB, filter FilterOption) ([]{{.ModelName}}Model, error) {
 			if filter.Dir != "ASC" && filter.Dir != "DESC" {
 				return nil, errors.New("Invalid order by parameter")
@@ -102,8 +94,6 @@ func createModel(cmd *cobra.Command, args []string) {
 			query := fmt.Sprintf(` + fmt.Sprintf("`%s`", `SELECT
 				id,
 				name,
-				email,
-				password,
 				created_at,
 				created_by,
 				updated_at,
@@ -130,8 +120,6 @@ func createModel(cmd *cobra.Command, args []string) {
 				err = rows.Scan(
 					&{{.ModelNameLower}}.ID,
 					&{{.ModelNameLower}}.Name,
-					&{{.ModelNameLower}}.Email,
-					&{{.ModelNameLower}}.Password,
 					&{{.ModelNameLower}}.CreatedAt,
 					&{{.ModelNameLower}}.CreatedBy,
 					&{{.ModelNameLower}}.UpdatedAt,
@@ -146,13 +134,12 @@ func createModel(cmd *cobra.Command, args []string) {
 			return {{.ModelNameLower}}s, nil
 		}
 
+		// GetOne{{.ModelName}} is ...
 		func GetOne{{.ModelName}}(ctx context.Context, db *sql.DB, id uuid.UUID) ({{.ModelName}}Model, error) {
 			query := ` + fmt.Sprintf("`%s`", `
 				SELECT
 					id,
 					name,
-					email,
-					password,
 					created_at,
 					created_by,
 					updated_at,
@@ -167,8 +154,6 @@ func createModel(cmd *cobra.Command, args []string) {
 			err := db.QueryRowContext(ctx, query, id).Scan(
 				&{{.ModelNameLower}}.ID,
 				&{{.ModelNameLower}}.Name,
-				&{{.ModelNameLower}}.Email,
-				&{{.ModelNameLower}}.Password,
 				&{{.ModelNameLower}}.CreatedAt,
 				&{{.ModelNameLower}}.CreatedBy,
 				&{{.ModelNameLower}}.UpdatedAt,
@@ -181,24 +166,21 @@ func createModel(cmd *cobra.Command, args []string) {
 			return {{.ModelNameLower}}, nil
 		}
 
+		// Insert is ...
 		func ({{.ModelNameLower}} *{{.ModelName}}Model) Insert(ctx context.Context, db *sql.DB) error {
 			query := ` + fmt.Sprintf("`%s`", `
 			INSERT INTO {{.ModelNameLower}} (
 				name,
-				email,
-				password,
 				created_by,
 				created_at
 			) VALUES (
-				$1, $2, $3, $4, now()
+				$1, $2, now()
 			) RETURNING
 				id,
 				created_at`) + `
 		
 			err := db.QueryRowContext(ctx, query,
 				{{.ModelNameLower}}.Name,
-				{{.ModelNameLower}}.Email,
-				{{.ModelNameLower}}.Password,
 				{{.ModelNameLower}}.CreatedBy,
 			).Scan(
 				&{{.ModelNameLower}}.ID,
@@ -211,23 +193,20 @@ func createModel(cmd *cobra.Command, args []string) {
 			return nil
 		}
 
+		// Update is ...
 		func ({{.ModelNameLower}} *{{.ModelName}}Model) Update(ctx context.Context, db *sql.DB) error {
 			query := ` + fmt.Sprintf("`%s`", `
 				UPDATE
 					{{.ModelNameLower}}
 				SET
 					name = $1,
-					email = $2,
-					password = $3,
-					updated_by = $4,
+					updated_by = $2,
 					updated_at = NOW()
 				WHERE
-					id = $5`) + `
+					id = $3`) + `
 		
 			_, err := db.ExecContext(ctx, query,
 				{{.ModelNameLower}}.Name,
-				{{.ModelNameLower}}.Email,
-				{{.ModelNameLower}}.Password,
 				{{.ModelNameLower}}.UpdatedBy,
 				{{.ModelNameLower}}.ID,
 			)
@@ -238,7 +217,7 @@ func createModel(cmd *cobra.Command, args []string) {
 			return nil
 		}
 
-
+		// Delete is ...
 		func Delete{{.ModelName}}ByID(ctx context.Context, db *sql.DB, id uuid.UUID) error {
 			query := "DELETE FROM {{.ModelNameLower}} WHERE id = $1"
 		

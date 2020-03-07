@@ -7,8 +7,9 @@ import (
 	path "path/filepath"
 	"strings"
 
-	"github.com/jiharal/s1gu/utils"
 	"github.com/spf13/cobra"
+
+	"github.com/jiharal/s1gu/utils"
 )
 
 var routerCommand = &cobra.Command{
@@ -221,12 +222,14 @@ func createRouter(cmd *cobra.Command, args []string) {
 			"{{.AppPath}}/util"
 		)
 		
+		// Handler{{.routerName}}List is ...
 		func Handler{{.routerName}}List(w http.ResponseWriter, r *http.Request) (interface{}, *api.Error) {
 			ctx := r.Context()
 			filter := ParseFilterFromForm(ctx, r.Form)
 			return {{.routerNameLower}}Service.List(ctx, filter)
 		}
 		
+		// Handler{{.routerName}}Detail is ...
 		func Handler{{.routerName}}Detail(w http.ResponseWriter, r *http.Request) (interface{}, *api.Error) {
 			ctx := r.Context()
 			vars := mux.Vars(r)
@@ -240,6 +243,7 @@ func createRouter(cmd *cobra.Command, args []string) {
 			return {{.routerNameLower}}Service.Detail(ctx, id)
 		}
 		
+		// Handler{{.routerName}}Create is ...
 		func Handler{{.routerName}}Create(w http.ResponseWriter, r *http.Request) (interface{}, *api.Error) {
 			ctx := r.Context()
 
@@ -255,6 +259,7 @@ func createRouter(cmd *cobra.Command, args []string) {
 			return {{.routerNameLower}}Service.Create(ctx, param)
 		}
 		
+		// Handler{{.routerName}}Update is ...
 		func Handler{{.routerName}}Update(w http.ResponseWriter, r *http.Request) (interface{}, *api.Error) {
 			ctx := r.Context()
 			vars := mux.Vars(r)
@@ -277,6 +282,7 @@ func createRouter(cmd *cobra.Command, args []string) {
 			return nil, {{.routerNameLower}}Service.Update(ctx, param)
 		}
 		
+		// Handler{{.routerName}}Delete is ...
 		func Handler{{.routerName}}Delete(w http.ResponseWriter, r *http.Request) (interface{}, *api.Error) {
 			ctx := r.Context()
 			vars := mux.Vars(r)

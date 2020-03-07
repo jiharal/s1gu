@@ -7,8 +7,9 @@ import (
 	path "path/filepath"
 	"strings"
 
-	"github.com/jiharal/s1gu/utils"
 	"github.com/spf13/cobra"
+
+	"github.com/jiharal/s1gu/utils"
 )
 
 var apiCommand = &cobra.Command{
@@ -67,12 +68,14 @@ func createAPI(cmd *cobra.Command, args []string) {
 	)
 
 	type (
+		// {{.ApiName}}Module is ...
 		{{.ApiName}}Module struct {
 			db    *sql.DB
 			cache *redis.Pool
 			name  string
 		}
 
+		// {{.ApiName}}DataParam is ...
 		{{.ApiName}}DataParam struct {
 			ID    uuid.UUID ` + fmt.Sprintf("`json:%s`", `"id"`) + `
 			Name  string ` + fmt.Sprintf("`json:%s`", `"name"`) + `
@@ -80,7 +83,7 @@ func createAPI(cmd *cobra.Command, args []string) {
 		}
 	)
 
-	
+	// New{{.ApiName}}Module is ...
 	func New{{.ApiName}}Module(db *sql.DB, cache *redis.Pool) *{{.ApiName}}Module {
 		return &{{.ApiName}}Module{
 			db:    db,
@@ -89,6 +92,7 @@ func createAPI(cmd *cobra.Command, args []string) {
 		}
 	}
 
+	// List is a ...
 	func (m {{.ApiName}}Module) List(ctx context.Context, filter model.FilterOption) ([]model.{{.ApiName}}ModelResponse, *Error) {
 		{{.ApiNameLower}}s, err := model.GetAll{{.ApiName}}(ctx, m.db, filter)
 		if err != nil {
@@ -106,6 +110,7 @@ func createAPI(cmd *cobra.Command, args []string) {
 	}
 	
 
+	// Detail is ...
 	func (m {{.ApiName}}Module) Detail(ctx context.Context, id uuid.UUID) (model.{{.ApiName}}ModelResponse, *Error) {
 		{{.ApiNameLower}}, err := model.GetOne{{.ApiName}}(ctx, m.db, id)
 		if err != nil {
@@ -124,6 +129,7 @@ func createAPI(cmd *cobra.Command, args []string) {
 		return {{.ApiNameLower}}.Response(), nil
 	}
 	
+	// Create is ...
 	func (m {{.ApiName}}Module) Create(ctx context.Context, param {{.ApiName}}DataParam) (model.{{.ApiName}}ModelResponse, *Error) {
 		
 		{{.ApiNameLower}} := model.{{.ApiName}}Model{
@@ -140,6 +146,7 @@ func createAPI(cmd *cobra.Command, args []string) {
 		return {{.ApiNameLower}}.Response(), nil 
 	}
 	
+	// Update is ...
 	func (m {{.ApiName}}Module) Update(ctx context.Context, param {{.ApiName}}DataParam) *Error {
 		{{.ApiNameLower}} := model.{{.ApiName}}Model{
 			ID: param.ID,
@@ -156,6 +163,7 @@ func createAPI(cmd *cobra.Command, args []string) {
 		return nil
 	}
 	
+	// Delete is ...
 	func (m {{.ApiName}}Module) Delete(ctx context.Context, id uuid.UUID) *Error {
 		err := model.Delete{{.ApiName}}ByID(ctx, m.db, id)
 		if err != nil {
