@@ -212,14 +212,12 @@ func createRouter(cmd *cobra.Command, args []string) {
 
 		import (
 			"net/http"
-			"strconv"
 
 			"github.com/gorilla/mux"
 			"github.com/pkg/errors"
 			uuid "github.com/satori/go.uuid"
 		
 			"{{.AppPath}}/api"
-			"{{.AppPath}}/util"
 		)
 		
 		// Handler{{.routerName}}List is ...
