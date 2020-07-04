@@ -50,25 +50,25 @@ func createModelORM(cmd *cobra.Command, args []string) {
 		)
 
 		type (
-			// {{.ModelName}} struct model
+			// {{.ModelName}}Model struct model
 			{{.ModelName}}Model struct {
-				ID          uuid.UUID ` + `pg:"type:uuid,default:gen_random_uuid(),pk"` + `
-				Name      	string    ` + `pg:"name"` + `
-				IsActive    bool    	` + `pg:"is_active"` + `
-				CreatedAt   time.Time ` + `pg:"created_at,default:now()"` + `
-				UpdatedAt   time.Time ` + `pg:"updated_at"` + `
-				CreatedBy   uuid.UUID ` + `pg:"type:uuid"` + `
-				UpdatedBy   uuid.UUID ` + `pg:"type:uuid"` + `
+				ID          uuid.UUID ` + fmt.Sprintf("`%s`", `pg:"type:uuid,default:gen_random_uuid(),pk"`) + `
+				Name      	string    ` + fmt.Sprintf("`%s`", `pg:"name"`) + `
+				IsActive    bool    	` + fmt.Sprintf("`%s`", `pg:"is_active"`) + `
+				CreatedAt   time.Time ` + fmt.Sprintf("`%s`", `pg:"created_at,default:now()"`) + `
+				UpdatedAt   time.Time ` + fmt.Sprintf("`%s`", `pg:"updated_at"`) + `
+				CreatedBy   uuid.UUID ` + fmt.Sprintf("`%s`", `pg:"type:uuid"`) + `
+				UpdatedBy   uuid.UUID ` + fmt.Sprintf("`%s`", `pg:"type:uuid"`) + `
 			}
 			// {{.ModelName}}ModelResponse is a struct response.
 			{{.ModelName}}ModelResponse struct {
-				ID          uuid.UUID ` + `json:"id"` + `
-				Name 				string		` + `json:"name"` + `
-				IsActive		bool			` + `json:"is_active"` + `
-				CreatedAt   time.Time ` + `json:"created_at"` + `
-				UpdatedAt   time.Time ` + `json:"updated_at"` + `
-				CreatedBy   uuid.UUID ` + `json:"created_by"` + `
-				UpdatedBy   uuid.UUID ` + `json:"updated_by"` + `
+				ID          uuid.UUID ` + fmt.Sprintf("`%s`", `json:"id"`) + `
+				Name 				string		` + fmt.Sprintf("`%s`", `json:"name"`) + `
+				IsActive		bool			` + fmt.Sprintf("`%s`", `json:"is_active"`) + `
+				CreatedAt   time.Time ` + fmt.Sprintf("`%s`", `json:"created_at"`) + `
+				UpdatedAt   time.Time ` + fmt.Sprintf("`%s`", `json:"updated_at"`) + `
+				CreatedBy   uuid.UUID ` + fmt.Sprintf("`%s`", `json:"created_by"`) + `
+				UpdatedBy   uuid.UUID ` + fmt.Sprintf("`%s`", `json:"updated_by"`) + `
 			}
 		)
 
@@ -85,7 +85,7 @@ func createModelORM(cmd *cobra.Command, args []string) {
 			}
 		}
 
-		/ GetAll{{.ModelName}} is a ...
+		// GetAll{{.ModelName}} is a ...
 		func GetAll{{.ModelName}}(ctx context.Context, db *pg.DB, filter FilterOption) ([]{{.ModelName}}Model, error) {
 			var {{.ModelName}}s []{{.ModelName}}Model
 			if filter.Dir == "" || filter.Dir != "ASC" {
@@ -108,8 +108,8 @@ func createModelORM(cmd *cobra.Command, args []string) {
 		}
 
 		// GetOne{{.ModelName}} is used to get one DB
-		func GetOne{{.ModelName}}(ctx context.Context, db *pg.DB, param string) ({{.ModelName}}, error) {
-			var {{.ModelName}} {{.ModelName}}
+		func GetOne{{.ModelName}}(ctx context.Context, db *pg.DB, param string) ({{.ModelName}}Model, error) {
+			var {{.ModelName}} {{.ModelName}}Model
 			err := db.Model(&{{.ModelName}}).
 				Where("name = ?", param).
 				WhereOr("id = ?", uuid.FromStringOrNil(param)).
@@ -122,21 +122,21 @@ func createModelORM(cmd *cobra.Command, args []string) {
 		}
 
 		// Insert is used to ...
-		func (data {{.ModelName}}) Insert(ctx context.Context, db *pg.DB) ({{.ModelName}}, error) {
-			err := db.Insert(&data)
+		func ({{.ModelNameLower}} {{.ModelName}}Model) Insert(ctx context.Context, db *pg.DB) ({{.ModelName}}Model, error) {
+			err := db.Insert(&{{.ModelNameLower}})
 			if err != nil {
-				return data, err
+				return {{.ModelNameLower}}, err
 			}
-			return data, nil
+			return {{.ModelNameLower}}, nil
 		}
 
 		// Update is used to ...
-		func ({{.ModelNameLower}} *{{.ModelName}}) Update(ctx context.Context, db *pg.DB) error {
+		func ({{.ModelNameLower}} *{{.ModelName}}Model) Update(ctx context.Context, db *pg.DB) error {
 			{{.ModelNameLower}}.UpdatedAt = time.Now()
-			{{.ModelNameLower}} := db.Model({{.ModelNameLower}}).
+			data := db.Model({{.ModelNameLower}}).
 				Set("name = ?", {{.ModelNameLower}}.Name).
 				Set("updated_at = ?", {{.ModelNameLower}}.UpdatedAt)
-			_, err := {{.ModelNameLower}}.Returning("*").
+			_, err := data.Returning("*").
 				Where("id = ?", {{.ModelNameLower}}.ID).
 				Update()
 			if err != nil {
@@ -146,14 +146,14 @@ func createModelORM(cmd *cobra.Command, args []string) {
 		}
 
 		// {{.ModelName}}Delete is used to delete by id
-		func {{.ModelName}}Delete(ctx context.Context, db *pg.DB, id string) (*{{.ModelName}}, error) {
-			var data {{.ModelName}}
+		func {{.ModelName}}Delete(ctx context.Context, db *pg.DB, id string) (*{{.ModelName}}Model, error) {
+			var data {{.ModelName}}Model
 			_, err := db.Model(&data).Where("id = ?", id).Delete()
 
 			if err != nil {
 				return nil, err
 			}
-			return data, nil
+			return &data, nil
 		}
 	`
 	fmt.Fprintf(output, "\t%s%screate%s\t %s%s\n", "\x1b[32m", "\x1b[1m", "\x1b[21m", path.Join(pathModel, filename), "\x1b[0m")
