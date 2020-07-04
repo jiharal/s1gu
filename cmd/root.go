@@ -28,7 +28,7 @@ var rootCmd = &cobra.Command{
 
 // Execute is ...
 func Execute() {
-	rootCmd.AddCommand(modelCommand, newCommand, routerCommand, apiCommand)
+	rootCmd.AddCommand(modelCommand, newCommand, routerCommand, apiCommand, modelORMCommand)
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)
 		os.Exit(1)

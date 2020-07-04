@@ -46,7 +46,6 @@ func createModel(cmd *cobra.Command, args []string) {
 			"time"
 
 			"github.com/lib/pq"
-			"github.com/pkg/errors"
 			uuid "github.com/satori/go.uuid"
 		)
 
@@ -88,7 +87,7 @@ func createModel(cmd *cobra.Command, args []string) {
 		// GetAll{{.ModelName}} is a ...
 		func GetAll{{.ModelName}}(ctx context.Context, db *sql.DB, filter FilterOption) ([]{{.ModelName}}Model, error) {
 			if filter.Dir != "ASC" && filter.Dir != "DESC" {
-				return nil, errors.New("Invalid order by parameter")
+				return nil, err
 			}
 		
 			query := fmt.Sprintf(` + fmt.Sprintf("`%s`", `SELECT
@@ -108,7 +107,7 @@ func createModel(cmd *cobra.Command, args []string) {
 		
 			rows, err := db.QueryContext(ctx, query, filter.Search, filter.Limit, filter.Offset)
 			if err != nil {
-				return nil, errors.Wrap(err, "model/{{.ModelNameLower}}/list")
+				return nil, err
 			}
 			defer rows.Close()
 		
@@ -126,7 +125,7 @@ func createModel(cmd *cobra.Command, args []string) {
 					&{{.ModelNameLower}}.UpdatedBy,
 				)
 				if err != nil {
-					return nil, errors.Wrap(err, "model/{{.ModelNameLower}}/list/scan")
+					return nil, err
 				}
 		
 				{{.ModelNameLower}}s = append({{.ModelNameLower}}s, {{.ModelNameLower}})
@@ -160,7 +159,7 @@ func createModel(cmd *cobra.Command, args []string) {
 				&{{.ModelNameLower}}.UpdatedBy,
 			)
 			if err != nil {
-				return {{.ModelName}}Model{}, errors.Wrap(err, "model/{{.ModelNameLower}}/query/id")
+				return {{.ModelName}}Model{}, err
 			}
 		
 			return {{.ModelNameLower}}, nil
@@ -187,7 +186,7 @@ func createModel(cmd *cobra.Command, args []string) {
 				&{{.ModelNameLower}}.CreatedAt,
 			)
 			if err != nil {
-				return errors.Wrap(err, "model/{{.ModelNameLower}}/insert")
+				return err
 			}
 		
 			return nil
@@ -211,7 +210,7 @@ func createModel(cmd *cobra.Command, args []string) {
 				{{.ModelNameLower}}.ID,
 			)
 			if err != nil {
-				return errors.Wrap(err, "model/{{.ModelNameLower}}/update")
+				return err
 			}
 		
 			return nil
@@ -223,7 +222,7 @@ func createModel(cmd *cobra.Command, args []string) {
 		
 			_, err := db.ExecContext(ctx, query, id)
 			if err != nil {
-				return errors.Wrap(err, "model/{{.ModelNameLower}}/delete")
+				return err
 			}
 			return nil
 		}`

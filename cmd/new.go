@@ -107,6 +107,8 @@ func createNewFramework(cmd *cobra.Command, args []string) {
 	// Create file id.go
 	fmt.Fprintf(output, "\t%s%screate%s\t %s%s\n", "\x1b[32m", "\x1b[1m", "\x1b[21m", path.Join(apppath, "system", "id.go"), "\x1b[0m")
 	utils.WriteToFile(path.Join(apppath, "system", "id.go"), newSigu.createGeneralID())
+	fmt.Fprintf(output, "\t%s%screate%s\t %s%s\n", "\x1b[32m", "\x1b[1m", "\x1b[21m", path.Join(apppath, "system", "validate.go"), "\x1b[0m")
+	utils.WriteToFile(path.Join(apppath, "system", "validate.go"), newSigu.createValidate())
 
 	// Create files directory
 	fmt.Fprintf(output, "\t%s%screate%s\t %s%s\n", "\x1b[32m", "\x1b[1m", "\x1b[21m", apppath+string(path.Separator), "\x1b[0m")
