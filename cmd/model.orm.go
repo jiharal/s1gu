@@ -86,14 +86,14 @@ func createModelORM(cmd *cobra.Command, args []string) {
 		}
 
 		// GetAll{{.ModelName}} is a ...
-		func GetAll{{.ModelName}}(ctx context.Context, db *pg.DB, filter FilterOption) ([]{{.ModelName}}Model, error) {
+		func GetAll{{.ModelName}}(ctx context.Context, db *pg.DB, filter FilterOption) ([]{{.ModelName}}Model,int, error) {
 			var {{.ModelName}}s []{{.ModelName}}Model
 			if filter.Dir == "" || filter.Dir != "ASC" {
 				filter.Dir = "DESC"
 			} else {
 				filter.Dir = "ASC"
 			}
-			err := db.Model(&{{.ModelName}}s).
+			totalItem, err := db.Model(&{{.ModelName}}s).
 				Where("name = CASE WHEN ? <> '' THEN ? ELSE name END", filter.Search, filter.Search).
 				WhereOr("id = CASE WHEN ? <> '' THEN ? ELSE id END", uuid.FromStringOrNil(filter.Search), uuid.FromStringOrNil(filter.Search)).
 				Order(fmt.Sprintf("created_at %s", filter.Dir)).
@@ -102,9 +102,9 @@ func createModelORM(cmd *cobra.Command, args []string) {
 				Select()
 
 			if err != nil {
-				return nil, err
+				return nil,0, err
 			}
-			return {{.ModelName}}s, nil
+			return {{.ModelName}}s,totalItem, nil
 		}
 
 		// GetOne{{.ModelName}} is used to get one DB
